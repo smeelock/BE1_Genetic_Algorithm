@@ -4,4 +4,4 @@ import Route
 import City
 
 if __name__ == "__main__":
-    pass
+    civ = Civilization("first try")

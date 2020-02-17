@@ -10,4 +10,7 @@ class Route:
     def evaporationOfPheromon(self):
         pass
 
+    def getLength(self):
+        return self.__length
+
         
