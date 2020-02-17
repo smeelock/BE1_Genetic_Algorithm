@@ -8,9 +8,15 @@ class City:
         self.__X = x
         self.__Y = y
 
-        self.__pathFromMe = [] # list of routes with start=this city
+        self.__routeFromMe = [] # list of routes with start=this city
 
-    def getPathFromCity(self):
-        return self.__pathFromMe
+    def getRoutesFromCity(self):
+        return self.__routeFromMe
+    
+    def isFoodCity(self):
+        return self.__is_food
+    
+    def isNest(self):
+        return self.__is_nest
 
         

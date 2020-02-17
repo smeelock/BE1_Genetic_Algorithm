@@ -18,8 +18,13 @@ class Route:
     def getPheromonLevel(self):
         return self.__pheromon_level
 
-
     def getLength(self):
         return self.__length
+    
+    def getStartCity(self):
+        return self.__start_city
+    
+    def getEndCity(self):
+        return self.__end_city
 
         
