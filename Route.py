@@ -7,7 +7,7 @@ class Route:
         self.__start_city = start_city
         self.__end_city = end_city
         self.__pheromon_level = 0
-        self.__length = 0
+        self.__length = self.computeDistance()
     
     def evaporationOfPheromon(self):
         self.__pheromon_level *= (1 - RHO)
@@ -26,5 +26,8 @@ class Route:
     
     def getEndCity(self):
         return self.__end_city
+
+    def computeDistance(self): # taking 
+        l = 0
 
         

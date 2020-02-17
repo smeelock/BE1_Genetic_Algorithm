@@ -11,8 +11,7 @@ class Civilization:
 
         self.__foodCities = []
 
-        self.__cities = []
-        self.updateCities()
+        self.__cities = [initial_nest]
 
         self.__ants = []
 
@@ -25,15 +24,20 @@ class Civilization:
     def stepForward(self):
         pass
 
-    def addNestCity(self, nest_city):
+    def addNest(self, nest_city):
         self.__nestCities.append(nest_city)
-        self.updateCities()
+        self.__cities.append(nest_city)
 
-    def addFood(self, food_city):
+    def addFoodCity(self, food_city):
         self.__foodCities.append(food_city)
-        self.updateCities()
+        self.__cities.append(food_city)
     
-    def updateCities(self): 
-        """ Updates city list when adding/removing a city (either nest, food, or not) """
-        self.__cities = self.__nestCities + self.__foodCities
+    def addCity(self, city):
+        self.__cities.append(city)
+
+    def addAnt(self, ant):
+        self.__ants.append(ant)
+
+    def getInitialNest(self):
+        return self.__nestCities[0]
     

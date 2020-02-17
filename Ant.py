@@ -20,7 +20,11 @@ class Ant:
         self.__step_capacity = 1 # default step capacity : takes 1 step at a time
         self.__routes_taken = [] # queue: to remember where the ant went (lifo)
                                     # because when arriving to food, wants to go home so taking the last route (not the most ancient one)
-    
+
+        # Takes new route from current (initial) city based on trend
+        best_route = self.getTrend()
+        self.takeRoute(best_route)
+
     def getTrend(self, pheroLevel):
         """ According to pheromon level (float), chooses the best route to move forward towards objective """
         if not(self.__carry_food): # if not on the way back
