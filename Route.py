@@ -30,4 +30,11 @@ class Route:
     def computeDistance(self): 
         return abs(self.__start_city.getX() - self.__end_city.getX()) + abs(self.__start_city.getY() - self.__end_city.getY())
 
-        
+
+    def __str__(self):
+        return (
+            "{} - {} \n\t \
+             Distance : {} \n\t \
+             Pheromon Level : {}"\
+                 .format(str(self.__start_city), str(self.__end_city), self.__length, self.__pheromon_level)
+        )

@@ -1,4 +1,6 @@
-import Route
+from Route import *
+from City import *
+
 import math
 import random
 
@@ -54,6 +56,7 @@ class Ant:
 
     def walk(self):
         self.__remaning_steps_on_current_route -= self.__step_capacity
+        self.spreadPheromon()
         
         if self.__remaning_steps_on_current_route <= 0: # ant is arrived at the end of the current route
             self.__current_city = self.__current_route.getEndCity() # update current city
@@ -68,17 +71,21 @@ class Ant:
             best_route = self.getTrend()
             self.takeRoute(best_route)
             
-    def spreadPheronom(self): # when walking on edges, ants leaves pheromon where they go
+    def spreadPheromon(self): # when walking on edges, ants leaves pheromon where they go
         pl = self.__current_route.getPheromonLevel()
         pl = self.__alpha*math.sin(self.__beta*pl + self.__gamma)
-        self.__current_route.updatePheromonLevel(pl)
+        self.__current_route.setPheromonLevel(pl)
 
     def takeRoute(self, route):
         self.__current_route = route
         self.__remaning_steps_on_current_route = route.getLength()
         self.__routes_taken.append(route)
         self.__currently_on_the_road = True
+    
 
-
-
-        
+    def __str__(self):
+        return ("ID : {}\n\t \
+               Current route : {}\n\t \
+               Remaining steps : {}\n\t \
+               Carrying food : {} \
+                ".format(self.__ID, str(self.__current_route), self.__remaning_steps_on_current_route, self.__carry_food))   

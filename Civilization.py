@@ -58,3 +58,19 @@ class Civilization:
                         city.addRouteFromCity(r)
     
     
+    # DEBUGGING 
+    def printEnvironment(self):
+        for route in self.__routes:
+            print(route)
+
+    def printAntsStatus(self):
+        for ant in self.__ants:
+            print(ant)
+
+    def __str__(self):
+        print(self.__name)
+        self.printEnvironment()
+        self.printAntsStatus()
+        return ""
+        
+    
