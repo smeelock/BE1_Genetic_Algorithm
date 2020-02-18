@@ -53,7 +53,8 @@ class Civilization:
             for city2 in self.__cities:
                 if city != city2:
                     r = Route(city, city2)
-                    if r not in self.__routes:
+                    r_return = Route(city2, city) # the way back uses the same route, so must not be added in routes list 
+                    if r not in self.__routes and r_return not in self.__routes:
                         self.__routes.append(r)
                         city.addRouteFromCity(r)
     

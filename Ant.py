@@ -59,8 +59,9 @@ class Ant:
         self.spreadPheromon()
         
         if self.__remaning_steps_on_current_route <= 0: # ant is arrived at the end of the current route
-            self.__current_city = self.__current_route.getEndCity() # update current city
-            self.__currently_on_the_road = False
+            # update current city and ant status
+            self.__current_city = self.__current_route.getEndCity() if self.__current_city == self.__current_route.getStartCity() else self.__current_route.getStartCity()
+            self.__currently_on_the_road = False # useless ???
 
             # Checks if city is foodCity or Nest or nothing...
             if self.__current_city.isFoodCity(): self.catchFood()
