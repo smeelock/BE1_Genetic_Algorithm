@@ -1,4 +1,4 @@
-import City
+from City import *
 
 RHO = 0.5 # evaporation ratio
 
@@ -12,7 +12,7 @@ class Route:
     def evaporationOfPheromon(self):
         self.__pheromon_level *= (1 - RHO)
     
-    def updatePheromonLevel(self, new_phero_level):
+    def setPheromonLevel(self, new_phero_level):
         self.__pheromon_level = new_phero_level
     
     def getPheromonLevel(self):
@@ -27,7 +27,7 @@ class Route:
     def getEndCity(self):
         return self.__end_city
 
-    def computeDistance(self): # taking 
-        l = 0
+    def computeDistance(self): 
+        return abs(self.__start_city.getX() - self.__end_city.getX()) + abs(self.__start_city.getY() - self.__end_city.getY())
 
         

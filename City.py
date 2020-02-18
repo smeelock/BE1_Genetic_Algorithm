@@ -1,4 +1,4 @@
-import Route
+from Route import *
 
 class City:
     def __init__(self, name, x, y, is_nest=False, is_food=False):
@@ -13,10 +13,21 @@ class City:
     def getRoutesFromCity(self):
         return self.__routeFromMe
     
+    def addRouteFromCity(self, route_to_destination):
+        self.__routeFromMe.append(route_to_destination)
+    
     def isFoodCity(self):
         return self.__is_food
     
     def isNest(self):
         return self.__is_nest
 
+    def getX(self):
+        return self.__X
+    
+    def getY(self):
+        return self.__Y
+
+    def __str__(self):
+        return self.__name
         

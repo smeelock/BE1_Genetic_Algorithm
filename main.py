@@ -1,9 +1,10 @@
-import Civilization
-import Ant
-import Route
-import City
+from Civilization import *
+from Ant import *
+from Route import *
+from City import *
 
 import random
+import time
 
 if __name__ == "__main__":
     # 1 nest, 1 food, 2 random other cities
@@ -14,7 +15,12 @@ if __name__ == "__main__":
 
     # 10 ants
     for i in range(10):
-        name = "Ant {}".format(i)
-        civ.addAnt(Ant(name, civ.getInitialNest(), ID=i))
+        civ.addAnt(Ant(civ.getInitialNest(), ID=i))
+    
+    start_time = time.time()
+    while (time.time()-start_time < 1.): # 1 seconds simulation
+        print("===== Time {}s =====".format(time.time()-start_time))
+        civ.stepForward()
+        print(civ)
     
     
