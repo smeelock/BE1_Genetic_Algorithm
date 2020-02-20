@@ -84,7 +84,7 @@ COLORS = ['snow', 'ghost white', 'white smoke', 'gainsboro', 'floral white', 'ol
 
 # --------------------------------------------------------
 class ResultsZone(Canvas):
-    def __init__ (self, master, lst_cities=[], lst_routes=[], w=500, h=400, _bg='white'):
+    def __init__ (self, master, civ, lst_cities=[], lst_routes=[], w=500, h=400, _bg='white'):
         self.__w = w
         self.__h = h
 
@@ -95,6 +95,9 @@ class ResultsZone(Canvas):
         self.__master = master
         Canvas.__init__(self, master, width=w, height=h, bg=_bg, relief=RAISED, bd=5)
 
+        # Civilization (ie environnment)
+        self.__civ = civ
+
         # Cities and routes
         self.__cities = lst_cities
         self.__routes = lst_routes
@@ -102,8 +105,10 @@ class ResultsZone(Canvas):
         self.drawAllRoutes()
 
         # Ants
-        self.__ants = []
+        self.__ants = civ.getAnts()
         self.__antsRectID = [] # lst of id of shapes representing ants. Useful when erasing previous position of ants
+        self.drawAllAnts()
+        print("DEBUG ants ", self.__ants)
 
     def screenClickAction(self, event):
         print("Trace : (x,y) = ", event.x, event.y)
@@ -131,7 +136,7 @@ class ResultsZone(Canvas):
             # self.__master.drawRoute(x1, y1, x2, y2)
 
     def drawNodeInCanva(self, x, y):
-        radius = 5
+        radius = 10
         outline_color = random.choice(COLORS)
         fill_color = outline_color
         self.create_oval(x - radius, y - radius, x + radius, y + radius, outline=outline_color, fill=fill_color)
@@ -150,7 +155,7 @@ class ResultsZone(Canvas):
         self.pack()
     
     def drawAntInCanva(self, x, y, color):
-        r = 2
+        r = 5
         outline_color = color
         fill_color = outline_color
         antRectID = self.create_rectangle(x-r, y-r, x+r, y+r, outline=outline_color, fill=fill_color)
@@ -159,26 +164,28 @@ class ResultsZone(Canvas):
     
     def drawAllAnts(self):
         # Erase previous position
-        for ID in self.__antsRectID: self.delete(ID)
-        self.__antsRectID = [] # resetting previous shapes ID, must be empty to enter following loop
+        if len(self.__antsRectID) > 0 :
+            for ID in self.__antsRectID: 
+                self.delete(ID)
+            self.__antsRectID = [] # resetting previous shapes ID, must be empty to enter following loop
+            self.update()
 
         for ant in self.__ants:
             # Re-draw ants at new position
             x, y = ant.getX(), ant.getY()
-            color = COLORS[ant.getID()]
-            self.drawAntInCanva(x, y, color)
+            # color = COLORS[ant.getID()]
+            color = 'red'
+            self.drawAntInCanva((x/200+1/2)*self.__w, (y/200+1/2)*self.__h, color)
             
             # Draw each ants' followed path
             x_prev, y_prev = ant.getLastPosition()
-            self.create_line(x_prev, y_prev, x, y, fill=color)
+            self.create_line((x_prev/200+1/2)*self.__w, (y_prev/200+1/2)*self.__h, (x/200+1/2)*self.__w, (y/200+1/2)*self.__h, fill=color)
+            self.pack()
 
-            
+
             # TODO: add shape property to ant and reset followed route when returning home...
         
         
-        self.update()
-
-
 
 class MainWindow(Tk):
     def __init__(self, civ, lst_cities=[], lst_routes=[]):
@@ -188,19 +195,19 @@ class MainWindow(Tk):
         # Civilization (ie environnment)
         self.__civ = civ
 
-        self.__ResultsZone = ResultsZone(self, lst_cities, lst_routes)
-        self.__ResultsZone.pack()
+        self.__resultsZone = ResultsZone(self, civ, lst_cities, lst_routes)
+        self.__resultsZone.pack()
 
         self.__nodes = []
 
         # Buttons
-        self.__buttonStart = Button(self, text='Start simulation', command=self.startSimulation).pack(side=LEFT, padx=5, pady=5)
+        self.__buttonStart = Button(self, text='Simulation Step', command=self.simulationStep).pack(side=LEFT, padx=5, pady=5)
         self.__boutonUndo = Button(self, text='Undo', command=self.undo).pack(side=LEFT, padx=5, pady=5)
         self.__boutonErase = Button(self, text='Erase', command=self.eraseScreen).pack(side=LEFT, padx=5, pady=5)
         self.__boutonQuit = Button(self, text='Quit', command=self.destroy).pack(side=LEFT, padx=5, pady=5)
 
         # Set action for mouse click 1 (defined in resultsZone screenClickAction)
-        self.__ResultsZone.bind('<Button-1>', self.__ResultsZone.screenClickAction)
+        self.__resultsZone.bind('<Button-1>', self.__resultsZone.screenClickAction)
     
     def undo(self):
         pass
@@ -208,8 +215,10 @@ class MainWindow(Tk):
     def eraseScreen(self):
         pass
 
-    def startSimulation(self):
-        pass
+    def simulationStep(self):
+        for i in range(10): # skip forward 10 steps
+            self.__civ.stepForward()
+            self.__resultsZone.drawAllAnts()
 
 
 

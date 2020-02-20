@@ -38,15 +38,19 @@ class Ant:
             for route in self.__current_city.getRoutesFromCity():
                 if route not in self.__routes_taken: # to avoid cycling between 2 cities
                     available_routes.append(route)
+            
+            if len(available_routes) > 0:
+                # now chooses the routes with greatest phero level...
+                route_with_max_pl = random.choice(available_routes)
+                max_pl = route_with_max_pl.getPheromonLevel()
+                for route in available_routes[1:]: # we skip the first one because is considered as the best choice in the first place
+                    pl = route.getPheromonLevel()
+                    if pl > max_pl:
+                        route_with_max_pl = route
+                        max_pl = pl
 
-            # now chooses the routes with greatest phero level...
-            route_with_max_pl = available_routes[0]
-            max_pl = route_with_max_pl.getPheromonLevel()
-            for route in available_routes[1:]: # we skip the first one because is considered as the best choice in the first place
-                pl = route.getPheromonLevel()
-                if pl > max_pl:
-                    route_with_max_pl = route
-                    max_pl = pl
+            else : # ant is in a dead end (cannot move) --> return home
+                return self.__routes_taken.pop()
             
             return route_with_max_pl
 

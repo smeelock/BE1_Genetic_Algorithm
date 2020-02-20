@@ -20,18 +20,21 @@ if __name__ == "__main__":
     civ.addFoodCity(food_city)
     civ.addRoute(Route(rdm_cities[-1], food_city)) # route to objective city (food)
     civ.addRoute(Route(civ.getInitialNest(), rdm_cities[1])) # route to original nest
+    civ.addRoute(Route(civ.getInitialNest(), rdm_cities[2])) # route to original nest
 
-    win = MainWindow(civ.getCities(), civ.getRoutes())
-    win.mainloop()
 
     # 10 ants
     for i in range(10):
         civ.addAnt(Ant(civ.getInitialNest(), ID=i))
+
+    win = MainWindow(civ, civ.getCities(), civ.getRoutes())
+    win.mainloop()
+
     
-    start_time = time.time()
-    while (time.time()-start_time < 1.): # 1 seconds simulation
-        print("===== Time {}s =====".format(time.time()-start_time))
-        civ.stepForward()
-        print(civ)
+    # start_time = time.time()
+    # while (time.time()-start_time < 1.): # 1 seconds simulation
+    #     print("===== Time {}s =====".format(time.time()-start_time))
+    #     civ.stepForward()
+    #     print(civ)
     
 

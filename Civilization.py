@@ -26,7 +26,7 @@ class Civilization:
 
     def stepForward(self):
         for ant in self.__ants :
-            ant.walk
+            ant.walk()
 
     def addNest(self, nest_city):
         self.__nestCities.append(nest_city)
@@ -74,6 +74,9 @@ class Civilization:
 
     def getRoutes(self):
         return self.__routes
+    
+    def getAnts(self):
+        return self.__ants
     
     
     # DEBUGGING 
