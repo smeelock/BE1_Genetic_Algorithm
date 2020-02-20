@@ -3,15 +3,26 @@ from Ant import *
 from Route import *
 from City import *
 
+from AppResults import *
+
 import random
 import time
 
 if __name__ == "__main__":
     # 1 nest, 1 food, 2 random other cities
+    # cities coordinates are in [-100 100]
     civ = Civilization("first try")
-    rdm_cities = [City("city 1", 3, -2), City("city 2", 1, 1)]
-    for city in rdm_cities: civ.addCity(city)
-    civ.addFoodCity(City("Food City 1", 5, 5, is_nest=False, is_food=True))
+    rdm_cities = [City("city 1", -30, -20), City("city 2", -10, 10), City("city 3", 42, -66)]
+    food_city = City("Food City 1", 100, 100, is_nest=False, is_food=True)
+    for i in range(len(rdm_cities)): 
+        civ.addCity(rdm_cities[i])
+        civ.addRoute(Route(rdm_cities[i-1], rdm_cities[i]))
+    civ.addFoodCity(food_city)
+    civ.addRoute(Route(rdm_cities[-1], food_city)) # route to objective city (food)
+    civ.addRoute(Route(civ.getInitialNest(), rdm_cities[1])) # route to original nest
+
+    win = MainWindow(civ.getCities(), civ.getRoutes())
+    win.mainloop()
 
     # 10 ants
     for i in range(10):
