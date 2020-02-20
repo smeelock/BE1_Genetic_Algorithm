@@ -31,7 +31,7 @@ class Ant:
         # Takes new random route from current (initial) city based on trend
         self.takeRoute(random.choice(self.__current_city.getRoutesFromCity()))
 
-    def getTrend(self, pheroLevel):
+    def getTrend(self):
         """ According to pheromon level (float), chooses the best route to move forward towards objective """
         if not(self.__carry_food): # if not on the way back
             available_routes = []
@@ -62,7 +62,6 @@ class Ant:
     def walk(self):
         self.__remaning_steps_on_current_route -= self.__step_capacity
         destination = self.__current_route.getEndCity() if self.__current_city == self.__current_route.getStartCity() else self.__current_route.getStartCity() 
-        
         self.moveTowardsObjective(destination)
 
         self.spreadPheromon()
@@ -82,19 +81,16 @@ class Ant:
             self.takeRoute(best_route)
     
     def moveTowardsObjective(self, objective): # objective = destination city
-        # when walking towards objective, let's assume ants walk following constant-Y (horizontal line) then constant-X (vertical line)
-        if self.__X == objective.getX(): # ant is at the right longitude
-            # move Y
-            self.__Y += (objective.getY()-self.__Y)/abs(objective.getY()-self.__Y)
-
-        elif self.__Y == objective.getY(): # ant is at the right latitude
-            # move X
-            self.__X += (objective.getX()-self.__X)/abs(objective.getX()-self.__X)
-
-        else:
-            self.__X += (objective.getX()-self.__X)/abs(objective.getX()-self.__X)
-        
         self.__history.append((self.__X, self.__Y))
+
+        l = self.__current_route.computeManhattanDistance()
+        nb_of_steps = l/self.__step_capacity # let's divide total distance to travel by ant's capacity to move
+
+        delta_X = objective.getX()-self.__current_city.getX()
+        delta_Y = objective.getY()-self.__current_city.getY()
+
+        self.__X += delta_X/nb_of_steps
+        self.__Y += delta_Y/nb_of_steps       
 
             
     def spreadPheromon(self): # when walking on edges, ants leaves pheromon where they go
@@ -104,7 +100,7 @@ class Ant:
 
     def takeRoute(self, route):
         self.__current_route = route
-        self.__remaning_steps_on_current_route = route.getLength()
+        self.__remaning_steps_on_current_route = route.computeManhattanDistance()
         self.__routes_taken.append(route)
         self.__currently_on_the_road = True
     
