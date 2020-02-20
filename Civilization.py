@@ -14,7 +14,7 @@ class Civilization:
         self.__cities = [initial_nest]
 
         self.__routes = []
-        self.updateRoutes()
+        # self.updateRoutes()
 
         self.__ants = []
 
@@ -31,16 +31,26 @@ class Civilization:
     def addNest(self, nest_city):
         self.__nestCities.append(nest_city)
         self.__cities.append(nest_city)
-        self.updateRoutes()
+        # self.updateRoutes()
 
     def addFoodCity(self, food_city):
         self.__foodCities.append(food_city)
         self.__cities.append(food_city)
-        self.updateRoutes()
+        # self.updateRoutes()
     
     def addCity(self, city):
         self.__cities.append(city)
-        self.updateRoutes()        
+        # self.updateRoutes()       
+
+    def addRoute(self, city1, city2):
+        route = Route(city1, city2)
+        self.__routes.append(route) 
+        city1.addRouteFromCity(route)
+
+    def addRoute(self, route):
+        start_city = route.getStartCity()
+        self.__routes.append(route)
+        start_city.addRouteFromCity(route)
 
     def addAnt(self, ant):
         self.__ants.append(ant)
@@ -48,15 +58,22 @@ class Civilization:
     def getInitialNest(self):
         return self.__nestCities[0]
     
-    def updateRoutes(self):
-        for city in self.__cities:
-            for city2 in self.__cities:
-                if city != city2:
-                    r = Route(city, city2)
-                    r_return = Route(city2, city) # the way back uses the same route, so must not be added in routes list 
-                    if r not in self.__routes and r_return not in self.__routes:
-                        self.__routes.append(r)
-                        city.addRouteFromCity(r)
+    # def everyPossibleRoutes(self):
+    #     """ Adds every possible routes between all cities """
+    #     for city in self.__cities:
+    #         for city2 in self.__cities:
+    #             if city != city2:
+    #                 r = Route(city, city2)
+    #                 r_return = Route(city2, city) # the way back uses the same route, so must not be added in routes list 
+    #                 if r not in self.__routes and r_return not in self.__routes:
+    #                     self.__routes.append(r)
+    #                     city.addRouteFromCity(r)
+    
+    def getCities(self):
+        return self.__cities
+
+    def getRoutes(self):
+        return self.__routes
     
     
     # DEBUGGING 
