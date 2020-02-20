@@ -1,3 +1,6 @@
+from Ant import *
+from Civilization import *
+
 from tkinter import *
 from tkinter.messagebox import showinfo
 import random
@@ -86,7 +89,7 @@ class ResultsZone(Canvas):
         self.__h = h
 
         # Lst of nodes
-        self.___nodes = []
+        self.__nodes = []
 
         # Border around Canvas
         self.__master = master
@@ -97,6 +100,10 @@ class ResultsZone(Canvas):
         self.__routes = lst_routes
         self.drawAllCities()
         self.drawAllRoutes()
+
+        # Ants
+        self.__ants = []
+        self.__antsRectID = [] # lst of id of shapes representing ants. Useful when erasing previous position of ants
 
     def screenClickAction(self, event):
         print("Trace : (x,y) = ", event.x, event.y)
@@ -137,16 +144,50 @@ class ResultsZone(Canvas):
         # self.set_coordonnes_du_last_node(x,y)
         # self.__liste_coordonnes_centre_des_nodes.append((x,y))
     
-    def drawRouteInCanva(self, x1, y1, x2, y2):
-        fill_color = 'black'
+    def drawRouteInCanva(self, x1, y1, x2, y2, color='black'):
+        fill_color = color
         self.create_line(x1, y1, x2, y2, fill=fill_color)
         self.pack()
+    
+    def drawAntInCanva(self, x, y, color):
+        r = 2
+        outline_color = color
+        fill_color = outline_color
+        antRectID = self.create_rectangle(x-r, y-r, x+r, y+r, outline=outline_color, fill=fill_color)
+        self.pack()
+        self.__antsRectID.append(antRectID)
+    
+    def drawAllAnts(self):
+        # Erase previous position
+        for ID in self.__antsRectID: self.delete(ID)
+        self.__antsRectID = [] # resetting previous shapes ID, must be empty to enter following loop
+
+        for ant in self.__ants:
+            # Re-draw ants at new position
+            x, y = ant.getX(), ant.getY()
+            color = COLORS[ant.getID()]
+            self.drawAntInCanva(x, y, color)
+            
+            # Draw each ants' followed path
+            x_prev, y_prev = ant.getLastPosition()
+            self.create_line(x_prev, y_prev, x, y, fill=color)
+
+            
+            # TODO: add shape property to ant and reset followed route when returning home...
+        
+        
+        self.update()
+
 
 
 class MainWindow(Tk):
-    def __init__(self, lst_cities=[], lst_routes=[]):
+    def __init__(self, civ, lst_cities=[], lst_routes=[]):
         Tk.__init__(self)
         self.title('ESSAI GRAPHE')
+
+        # Civilization (ie environnment)
+        self.__civ = civ
+
         self.__ResultsZone = ResultsZone(self, lst_cities, lst_routes)
         self.__ResultsZone.pack()
 

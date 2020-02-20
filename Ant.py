@@ -19,9 +19,14 @@ class Ant:
         self.__remaning_steps_on_current_route = None
         self.__currently_on_the_road = (self.__current_route != None)
 
+        self.__X = initial_city.getX()
+        self.__Y = initial_city.getY()
+
         self.__step_capacity = 1 # default step capacity : takes 1 step at a time
         self.__routes_taken = [] # queue: to remember where the ant went (lifo)
                                     # because when arriving to food, wants to go home so taking the last route (not the most ancient one)
+
+        self.__history = [(initial_city.getX(), initial_city.getY())] # lst of tuples containing the history of (x, y) where ant was during simulation
 
         # Takes new random route from current (initial) city based on trend
         self.takeRoute(random.choice(self.__current_city.getRoutesFromCity()))
@@ -56,11 +61,15 @@ class Ant:
 
     def walk(self):
         self.__remaning_steps_on_current_route -= self.__step_capacity
+        destination = self.__current_route.getEndCity() if self.__current_city == self.__current_route.getStartCity() else self.__current_route.getStartCity() 
+        
+        self.moveTowardsObjective(destination)
+
         self.spreadPheromon()
         
         if self.__remaning_steps_on_current_route <= 0: # ant is arrived at the end of the current route
             # update current city and ant status
-            self.__current_city = self.__current_route.getEndCity() if self.__current_city == self.__current_route.getStartCity() else self.__current_route.getStartCity()
+            self.__current_city = destination
             self.__currently_on_the_road = False # useless ???
 
             # Checks if city is foodCity or Nest or nothing...
@@ -71,6 +80,22 @@ class Ant:
             # Takes new route from new current city based on trend
             best_route = self.getTrend()
             self.takeRoute(best_route)
+    
+    def moveTowardsObjective(self, objective): # objective = destination city
+        # when walking towards objective, let's assume ants walk following constant-Y (horizontal line) then constant-X (vertical line)
+        if self.__X == objective.getX(): # ant is at the right longitude
+            # move Y
+            self.__Y += (objective.getY()-self.__Y)/abs(objective.getY()-self.__Y)
+
+        elif self.__Y == objective.getY(): # ant is at the right latitude
+            # move X
+            self.__X += (objective.getX()-self.__X)/abs(objective.getX()-self.__X)
+
+        else:
+            self.__X += (objective.getX()-self.__X)/abs(objective.getX()-self.__X)
+        
+        self.__history.append((self.__X, self.__Y))
+
             
     def spreadPheromon(self): # when walking on edges, ants leaves pheromon where they go
         pl = self.__current_route.getPheromonLevel()
@@ -82,6 +107,18 @@ class Ant:
         self.__remaning_steps_on_current_route = route.getLength()
         self.__routes_taken.append(route)
         self.__currently_on_the_road = True
+    
+    def getX(self):
+        return self.__X
+    
+    def getY(self):
+        return self.__Y
+    
+    def getID(self):
+        return self.__ID
+    
+    def getLastPosition(self):
+        return self.__history[-1]
     
 
     def __str__(self):
