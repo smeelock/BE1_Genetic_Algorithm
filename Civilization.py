@@ -2,6 +2,9 @@ from Ant import *
 from Route import *
 from City import *
 
+from multiprocessing import Pool
+import sys
+
 class Civilization:
     def __init__(self, civ_name):
         self.__name = civ_name
@@ -23,6 +26,23 @@ class Civilization:
 
     def go(self):
         pass
+
+    # CAUTION: not working !!!!!!!!!!!!!!!!
+    def stepForwardParallel(self):
+        # Multi Threading : https://stackabuse.com/parallel-processing-in-python/
+        def evaluateWalkFunctionOfAnt(ant):
+            ant.walk()
+
+        try :
+            # Run this with a pool of 5 agents having a chunksize of 3 until finished
+            agents = 3
+            chunksize = len(self.__ants) / agents
+            with Pool(processes=agents) as pool:
+                result = pool.map(evaluateWalkFunctionOfAnt, self.__ants, chunksize)
+        except :
+            print("DEBUG: Error when trying to multithread. Running in single thread...\t")
+            e = sys.exc_info()[0]
+            self.stepForward()
 
     def stepForward(self):
         for ant in self.__ants :
