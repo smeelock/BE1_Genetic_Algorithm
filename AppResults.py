@@ -108,7 +108,7 @@ class ResultsZone(Canvas):
         self.__ants = civ.getAnts()
         self.__antsRectID = [] # lst of id of shapes representing ants. Useful when erasing previous position of ants
         self.drawAllAnts()
-        print("DEBUG ants ", self.__ants)
+        # print("DEBUG ants ", self.__ants)
 
     def screenClickAction(self, event):
         print("Trace : (x,y) = ", event.x, event.y)
@@ -189,8 +189,9 @@ class ResultsZone(Canvas):
 
 class MainWindow(Tk):
     def __init__(self, civ, lst_cities=[], lst_routes=[]):
+        print("DEBUG: initializing main window...")
         Tk.__init__(self)
-        self.title('ESSAI GRAPHE')
+        self.title("Genetic Algorithm")
 
         # Civilization (ie environnment)
         self.__civ = civ
@@ -208,17 +209,25 @@ class MainWindow(Tk):
 
         # Set action for mouse click 1 (defined in resultsZone screenClickAction)
         self.__resultsZone.bind('<Button-1>', self.__resultsZone.screenClickAction)
-    
+        print("\t ... DONE")
+        print("(waiting)")
+
     def undo(self):
+        print("DEBUG: undo...")
+        print("\t DONE...")
         pass
 
     def eraseScreen(self):
+        print("DEBUG: erase screen...")
+        print("\t DONE...")
         pass
 
     def simulationStep(self):
+        print("DEBUG: simulation step (x10)...")
         for i in range(10): # skip forward 10 steps
             self.__civ.stepForward()
             self.__resultsZone.drawAllAnts()
+        print("\t DONE...")
 
 
 
