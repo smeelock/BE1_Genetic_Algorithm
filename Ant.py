@@ -68,7 +68,6 @@ class Ant:
         destination = self.__current_route.getEndCity() if self.__current_city == self.__current_route.getStartCity() else self.__current_route.getStartCity() 
         self.moveTowardsObjective(destination)
 
-        self.spreadPheromon()
         
         if self.__remaning_steps_on_current_route <= 0: # ant is arrived at the end of the current route
             # update current city and ant status
@@ -108,6 +107,9 @@ class Ant:
         self.__routes_taken.append(route)
         self.__currently_on_the_road = True
     
+        # spread pheromon (only once) on the new choosen route
+        self.spreadPheromon()
+    
     def getX(self):
         return self.__X
     
@@ -120,7 +122,7 @@ class Ant:
     def getLastPosition(self):
         return self.__history[-1]
     
-
+    # DEBUG printing
     def __str__(self):
         return ("ID : {}\n\t \
                Current route : {}\n\t \
