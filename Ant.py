@@ -22,7 +22,7 @@ class Ant:
         self.__X = initial_city.getX()
         self.__Y = initial_city.getY()
 
-        self.__step_capacity = 1 # default step capacity : takes 1 step at a time
+        self.__step_capacity = 5 # default step capacity : takes 1 step at a time
         self.__routes_taken = [] # queue: to remember where the ant went (lifo)
                                     # because when arriving to food, wants to go home so taking the last route (not the most ancient one)
 
@@ -106,7 +106,7 @@ class Ant:
         self.__remaning_steps_on_current_route = route.computeManhattanDistance()
         self.__routes_taken.append(route)
         self.__currently_on_the_road = True
-    
+
         # spread pheromon (only once) on the new choosen route
         self.spreadPheromon()
     

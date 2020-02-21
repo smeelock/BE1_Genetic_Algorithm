@@ -8,10 +8,11 @@ from AppResults import *
 import random
 import time
 
-if __name__ == "__main__":
+    
+def fixedScenario():
     # 1 nest, 1 food, 2 random other cities
     # cities coordinates are in [-100 100]
-    civ = Civilization("first try")
+    civ = Civilization("fixed scenario")
     rdm_cities = [City("city 1", -30, -20), City("city 2", -10, 10), City("city 3", 42, -66)]
     food_city = City("Food City 1", 100, 100, is_nest=False, is_food=True)
     for i in range(len(rdm_cities)): 
@@ -26,6 +27,51 @@ if __name__ == "__main__":
     # 10 ants
     for i in range(10):
         civ.addAnt(Ant(civ.getInitialNest(), ID=i))
+    
+    return civ
+
+def randomScenario():
+    civ = Civilization("random scenario")
+
+    rdm_cities = [] 
+    # 10 random city
+    for i in range(10):
+        x, y = random.randint(-100, 100), random.randint(-100, 100)
+        c = City("City {}".format(i), x, y)
+        rdm_cities.append(c)
+        civ.addCity(c)
+
+    # 25 random routes
+    for i in range(25):
+        city1, city2 = random.choice(rdm_cities), random.choice(rdm_cities) 
+        r = Route(city1, city2)
+        r_reversed = Route(city2, city1)
+        if r not in civ.getRoutes() and r_reversed not in civ.getRoutes() : civ.addRoute(r)
+    
+    food_city = City("Food City 1", 100, 100, is_nest=False, is_food=True)
+    civ.addFoodCity(food_city)
+
+    # 2 routes to food city
+    for i in range(2):
+        civ.addRoute(Route(random.choice(rdm_cities), food_city)) # route to objective city (food)
+
+    # 2 routes to initial nest
+    for i in range(2):
+        civ.addRoute(Route(civ.getInitialNest(), random.choice(rdm_cities))) # route to original nest
+    
+    # 10 ants
+    for i in range(10):
+        civ.addAnt(Ant(civ.getInitialNest(), ID=i))
+    
+    return civ
+
+
+# ==============================================================================
+# ================================= MAIN =======================================
+# ==============================================================================
+
+if __name__ == "__main__":
+    civ = randomScenario()
 
     win = MainWindow(civ, civ.getCities(), civ.getRoutes())
     win.mainloop()
@@ -36,5 +82,3 @@ if __name__ == "__main__":
     #     print("===== Time {}s =====".format(time.time()-start_time))
     #     civ.stepForward()
     #     print(civ)
-    
-
