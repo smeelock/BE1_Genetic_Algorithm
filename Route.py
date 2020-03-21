@@ -31,6 +31,8 @@ class Route:
     def computeEuclidianDistance(self):
         return math.sqrt((self.__start_city.getX() - self.__end_city.getX())**2 + (self.__start_city.getY() - self.__end_city.getY())**2)
 
+
+    # DEBUG printing
     def __str__(self):
         return (
             "{} - {} \n\t \

@@ -71,7 +71,7 @@ def randomScenario():
 # ==============================================================================
 
 if __name__ == "__main__":
-    civ = randomScenario()
+    civ = fixedScenario()
 
     win = MainWindow(civ, civ.getCities(), civ.getRoutes())
     win.mainloop()

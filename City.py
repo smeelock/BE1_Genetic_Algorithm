@@ -10,6 +10,8 @@ class City:
 
         self.__routeFromMe = [] # list of routes with start=this city
 
+        self.__color = None
+
     def getRoutesFromCity(self):
         return self.__routeFromMe
     
@@ -27,6 +29,12 @@ class City:
     
     def getY(self):
         return self.__Y
+
+    def setColor(self, color):
+        self.__color = color
+
+    def getColor(self):
+        return self.__color
 
     def __str__(self):
         return self.__name
