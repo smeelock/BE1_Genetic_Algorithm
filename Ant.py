@@ -3,10 +3,11 @@ from City import *
 
 import math
 import random
+import numpy as np
 import itertools
 
 class Ant:
-    def __init__(self, initial_city, alpha=random.uniform(-5, 5), beta=random.uniform(-5, 5), gamma=random.uniform(-5, 5)):
+    def __init__(self, initial_city, alpha=np.random.uniform(-5, 5), beta=np.random.uniform(-5, 5), gamma=np.random.uniform(-5, 5)):
         self.__ID = itertools.count().next()
 
         # DNA of ant (default : random)
@@ -35,18 +36,19 @@ class Ant:
         self.__routes_history = []
 
         # Takes new random route from current (initial) city based on trend
-        self.takeRoute(random.choice(self.__current_city.getRoutesFromCity()))
+        self.takeRoute(np.random.choice(self.__current_city.getRoutesFromCity()))
     
     # Second constructor : Crossover
     def __init__(self, initial_city, daddy, mommy):
-        a1, b1, g1 = daddy.getDNA()
-        a2, b2, g2 = mommy.getDNA()
-        new_chromosome = [random.choice([0, 1]) for i in range(3)] 
+        new_chromosome = np.random.choice([0, 1], size=3)
+        [alpha, beta, gamma] = new_chromosome*daddy.getDNA() + (1-new_chromosome)*mommy.getDNA()
             # NOTE : 0 = takes mother's characteristics ; 1 = takes father's
-        self.__init__(initial_city)
-
-    def mutation(self):
-        pass
+        
+        # Mutation with a probability of 0.15
+        if np.random.binomial(1, 0.15) :
+            # NOTE : let's say mutation affect only 1 gene but selected as random
+            [self.__alpha, self.__beta, self.__gamma][np.random.randint(0, 3)] = np.random.uniform(-5, 5) 
+        self.__init__(initial_city, alpha, beta, gamma)        
 
     def getTrend(self):
         """ According to pheromon level (float), chooses the best route to move forward towards objective """
@@ -105,7 +107,7 @@ class Ant:
             
     def spreadPheromon(self): # when walking on edges, ants leaves pheromon where they go
         pl = self.__current_route.getPheromonLevel()
-        pl = self.__alpha*math.sin(self.__beta*pl + self.__gamma)
+        pl = self.__alpha*np.sin(self.__beta*pl + self.__gamma)
         self.__current_route.setPheromonLevel(pl)
 
     def takeRoute(self, route):
@@ -130,6 +132,9 @@ class Ant:
 
     def getLastPosition(self):
         return self.__coords_history[-1]
+    
+    def getDNA(self):
+        return [self.__alpha, self.__beta, self.__gamma]
     
     # DEBUG printing
     def __str__(self):
