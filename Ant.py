@@ -3,10 +3,12 @@ from City import *
 
 import math
 import random
+import itertools
 
 class Ant:
-    def __init__(self, initial_city, ID):
-        self.__ID = ID
+    def __init__(self, initial_city, alpha=random.uniform(-5, 5), beta=random.uniform(-5, 5), gamma=random.uniform(-5, 5)):
+        self.__ID = itertools.count().next()
+
 
         self.__alpha = random.uniform(-5, 5)
         self.__beta = random.uniform(-5, 5)

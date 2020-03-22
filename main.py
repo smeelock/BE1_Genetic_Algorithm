@@ -26,7 +26,7 @@ def fixedScenario():
 
     # 10 ants
     for i in range(10):
-        civ.addAnt(Ant(civ.getInitialNest(), ID=i))
+        civ.addAnt(Ant(civ.getInitialNest()))
     
     return civ
 
@@ -61,7 +61,7 @@ def randomScenario():
     
     # 10 ants
     for i in range(10):
-        civ.addAnt(Ant(civ.getInitialNest(), ID=i))
+        civ.addAnt(Ant(civ.getInitialNest()))
     
     return civ
 
