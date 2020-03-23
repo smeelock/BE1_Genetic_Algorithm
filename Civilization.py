@@ -4,6 +4,7 @@ from City import *
 
 from multiprocessing import Pool
 import sys
+import numpy as np
 
 class Civilization:
     def __init__(self, civ_name):
@@ -21,7 +22,7 @@ class Civilization:
 
         self.__ants = []
 
-        self.__fitness = None
+        self.__fitness = []
 
         # ???
         # self.__natural_selection = 0 # les tours restants avant la prochaine sélection (pour l ’algorithme génétique)
@@ -29,51 +30,44 @@ class Civilization:
     def newGeneration(self):
         # NOTE: see https://towardsdatascience.com/introduction-to-genetic-algorithms-including-example-code-e396e98d8bf3
         # Compute fitness
-        self.computeFitness()
+        for i in range(1000): self.stepForward() # simulation (x1000)
 
         # Selection
-        success_fitness = np.sort(self.__fitness, axis=1)
-        explorer_fitness = np.sort(self.__fitness, axis=2)
+        rdm_ant = random.choice(self.__ants)
+        best_worker, second_best_worker, best_explorer, second_best_explorer, worst_worker, worst_explorer = [rdm_ant]*6
+        for ant in self.__ants:
+            success_fitness, explorer_fitness = ant.getFitness()
+            if success_fitness > best_worker.getFitness()[0]:
+                best_worker, second_best_worker = ant, best_worker
+            elif success_fitness < worst_worker.getFitness()[0]:
+                worst_worker = ant
+            
+            if explorer_fitness > best_explorer.getFitness()[1]:
+                best_explorer, second_best_explorer = ant, best_explorer
+            elif explorer_fitness < worst_explorer.getFitness()[1]:
+                worst_explorer = ant
 
         # Crossover
-        def getAntByID(id):
-            for a in self.__ants:
-                if a.getID() == id : return a
-            return None
-
-        best_worker, second_best_worker = getAntByID(success_fitness[0, -1]), getAntByID(success_fitness[0, -2]) 
-        best_explorer, second_best_explorer = getAntByID(explorer_fitness[0, 0]), getAntByID(explorer_fitness[0, 1])
-
         worker_offspring = Ant(initial_city=self.__nestCities[0], daddy=best_worker, mommy=second_best_worker)
-        explorer_offspring = Ant(self.__nestCities[0], best_explorer, second_best_explorer)
+        explorer_offspring = Ant(initial_city=self.__nestCities[0], daddy=best_explorer, mommy=second_best_explorer)
 
         # Mutation 
         if np.random.binomial(1, 0.15) : # with a probability of 0.15
             worker_offspring.mutation(initial_city=self.__nestCities[0])
             explorer_offspring.mutation(self.__nestCities[0])
         
-        
-        worst_worker_index = np.where(self.__fitness[1, :] == success_fitness[0, 0])
-        worst_explorer_index = np.where(self.__fitness[2, :] == explorer_fitness[0, -1])
-        if worst_explorer_index > worst_worker_index :
-            self.__ants.pop(worst_explorer_index) # remove worst worker first and then ...
-            self.__ants.pop(worst_worker_index) # remove worst explorer
-        elif worst_worker_index > worst_explorer_index:
-            self.__ants.pop(worst_worker_index) # remove worst explorer first and then ...
-            self.__ants.pop(worst_explorer_index) # remove worst worker
-        else : # if worst_worker is also worst_explorer
-            self.__ants.pop(worst_explorer_index) # remove worst worker/explorer
-            self.__ants.pop(np.random.randint(len(self.__ants))) # remove random ant to keep the population size the same
+        if worst_worker is worst_explorer :
+            self.__ants.remove(worst_worker)
+            rdm_ant = random.choice(self.__ants) # remove random ant to keep the population size the same but not any of the following
+            while rdm_ant in [best_worker, best_explorer, second_best_explorer, second_best_worker]:
+                rdm_ant = random.choice(self.__ants)
+            self.__ants.remove(rdm_ant)
+        else :
+            self.__ants.remove(worst_worker)
+            self.__ants.remove(worst_explorer)
 
         self.__ants.append(worker_offspring) # adding fittest offsprings to civilization
         self.__ants.append(explorer_offspring)
-
-
-    def computeFitness(self):
-        # Simpulation x1000
-        for i in range(1000): self.stepForward()
-        self.__fitness = [[a.getID(), a.getFitness()] for a in self.__ants]
-        print(self.__fitness)
 
     # CAUTION: not working !!!!!!!!!!!!!!!!
     def stepForwardParallel(self):

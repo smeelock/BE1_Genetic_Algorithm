@@ -134,7 +134,7 @@ class Ant:
         return [self.__alpha, self.__beta, self.__gamma]
     
     def getFitness(self):
-        return (self.__num_success, self.__num_exploration)
+        return self.__num_success, self.__num_exploration
     
     # DEBUG printing
     def __str__(self):

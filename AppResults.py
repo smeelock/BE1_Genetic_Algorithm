@@ -195,7 +195,7 @@ class CustomLabel(Label):
 
 class MainWindow(Tk):
     def __init__(self, civ, lst_cities=[], lst_routes=[]):
-        print("DEBUG: initializing main window...")
+        print("Initializing main window...")
         Tk.__init__(self)
         self.title("Genetic Algorithm")
 
@@ -229,7 +229,7 @@ class MainWindow(Tk):
         # self.__buttonErase = Button(self, text='Erase', command=self.eraseScreen)
         # self.__buttonErase.grid(row=11, column=3, padx=5, pady=5)
 
-        self.__buttonNewGeneration = Button(self, text='New Generation', command=self.__civ.newGeneration)
+        self.__buttonNewGeneration = Button(self, text='New Generation', command=self.newGeneration)
         self.__buttonNewGeneration.grid(row=11, column=2, padx=5, pady=5)
 
         self.__buttonQuit = Button(self, text='Quit', command=self.destroy)
@@ -252,8 +252,14 @@ class MainWindow(Tk):
     #     pass
 
     def simulationStep(self):
-        print("DEBUG: simulation step (x10)...")
-        for i in range(10): # skip forward 10 steps
+        print("Simulation step (x1000)...")
+        for i in range(1000): # skip forward 1000 steps
             self.__civ.stepForward()
+        self.__resultsZone.drawAllAnts()
+        self.updateLabels()
+
+    def newGeneration(self):
+        print("New Generation created !")
+        self.__civ.newGeneration()
         self.__resultsZone.drawAllAnts()
         self.updateLabels()
