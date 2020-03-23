@@ -7,8 +7,12 @@ import numpy as np
 import itertools
 
 class Ant:
-    def __init__(self, initial_city, alpha=np.random.uniform(-5, 5), beta=np.random.uniform(-5, 5), gamma=np.random.uniform(-5, 5)):
-        self.__ID = itertools.count().next()
+    def __init__(self, initial_city, alpha=np.random.uniform(-5, 5), beta=np.random.uniform(-5, 5), gamma=np.random.uniform(-5, 5), daddy=None, mommy=None):
+        if not(daddy is None or mommy is None) :
+            new_chromosome = np.random.choice([0, 1], size=3)
+            [alpha, beta, gamma] = new_chromosome*daddy.getDNA() + (1-new_chromosome)*mommy.getDNA()
+            # NOTE : 0 = takes mother's characteristics ; 1 = takes father's
+        self.__ID = next(itertools.count())
 
         # DNA of ant (default : random)
         self.__alpha = alpha
@@ -37,18 +41,11 @@ class Ant:
 
         # Takes new random route from current (initial) city based on trend
         self.takeRoute(np.random.choice(self.__current_city.getRoutesFromCity()))
-    
-    # Second constructor : Crossover
-    def __init__(self, initial_city, daddy, mommy):
-        new_chromosome = np.random.choice([0, 1], size=3)
-        [alpha, beta, gamma] = new_chromosome*daddy.getDNA() + (1-new_chromosome)*mommy.getDNA()
-            # NOTE : 0 = takes mother's characteristics ; 1 = takes father's
         
-        # Mutation with a probability of 0.15
-        if np.random.binomial(1, 0.15) :
-            # NOTE : let's say mutation affect only 1 gene but selected as random
-            [self.__alpha, self.__beta, self.__gamma][np.random.randint(0, 3)] = np.random.uniform(-5, 5) 
-        self.__init__(initial_city, alpha, beta, gamma)        
+    def mutation(self, initial_city):
+        # NOTE : let's say mutation affect only 1 gene but selected as random
+        [self.__alpha, self.__beta, self.__gamma][np.random.randint(0, 3)] = np.random.uniform(-5, 5) 
+        self.__init__(initial_city, self.__alpha, self.__beta, self.__gamma)        
 
     def getTrend(self):
         """ According to pheromon level (float), chooses the best route to move forward towards objective """
@@ -135,6 +132,9 @@ class Ant:
     
     def getDNA(self):
         return [self.__alpha, self.__beta, self.__gamma]
+    
+    def getFitness(self):
+        return (self.__num_success, self.__num_exploration)
     
     # DEBUG printing
     def __str__(self):
