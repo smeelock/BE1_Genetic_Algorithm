@@ -26,7 +26,7 @@ def fixedScenario():
 
     # 10 ants
     for i in range(10):
-        civ.addAnt(Ant(civ.getInitialNest(), ID=i))
+        civ.addAnt(Ant(civ.getInitialNest()))
     
     return civ
 
@@ -46,7 +46,12 @@ def randomScenario():
         city1, city2 = random.choice(rdm_cities), random.choice(rdm_cities) 
         r = Route(city1, city2)
         r_reversed = Route(city2, city1)
-        if r not in civ.getRoutes() and r_reversed not in civ.getRoutes() : civ.addRoute(r)
+        if r in civ.getRoutes() or r_reversed in civ.getRoutes() : 
+            i-=1
+        elif city1 is city2 :
+            i-=1
+        else :
+            civ.addRoute(r)
     
     food_city = City("Food City 1", 100, 100, is_nest=False, is_food=True)
     civ.addFoodCity(food_city)
@@ -61,7 +66,7 @@ def randomScenario():
     
     # 10 ants
     for i in range(10):
-        civ.addAnt(Ant(civ.getInitialNest(), ID=i))
+        civ.addAnt(Ant(civ.getInitialNest()))
     
     return civ
 
@@ -71,7 +76,7 @@ def randomScenario():
 # ==============================================================================
 
 if __name__ == "__main__":
-    civ = fixedScenario()
+    civ = randomScenario()
 
     win = MainWindow(civ, civ.getCities(), civ.getRoutes())
     win.mainloop()
