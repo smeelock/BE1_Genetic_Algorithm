@@ -4,6 +4,7 @@ from City import *
 
 from multiprocessing import Pool
 import sys
+import numpy as np
 
 class Civilization:
     def __init__(self, civ_name):
@@ -21,11 +22,52 @@ class Civilization:
 
         self.__ants = []
 
+        self.__fitness = []
+
         # ???
         # self.__natural_selection = 0 # les tours restants avant la prochaine sélection (pour l ’algorithme génétique)
 
-    def go(self):
-        pass
+    def newGeneration(self):
+        # NOTE: see https://towardsdatascience.com/introduction-to-genetic-algorithms-including-example-code-e396e98d8bf3
+        # Compute fitness
+        for i in range(1000): self.stepForward() # simulation (x1000)
+
+        # Selection
+        rdm_ant = random.choice(self.__ants)
+        best_worker, second_best_worker, best_explorer, second_best_explorer, worst_worker, worst_explorer = [rdm_ant]*6
+        for ant in self.__ants:
+            success_fitness, explorer_fitness = ant.getFitness()
+            if success_fitness > best_worker.getFitness()[0]:
+                best_worker, second_best_worker = ant, best_worker
+            elif success_fitness < worst_worker.getFitness()[0]:
+                worst_worker = ant
+            
+            if explorer_fitness > best_explorer.getFitness()[1]:
+                best_explorer, second_best_explorer = ant, best_explorer
+            elif explorer_fitness < worst_explorer.getFitness()[1]:
+                worst_explorer = ant
+
+        # Crossover
+        worker_offspring = Ant(initial_city=self.__nestCities[0], daddy=best_worker, mommy=second_best_worker)
+        explorer_offspring = Ant(initial_city=self.__nestCities[0], daddy=best_explorer, mommy=second_best_explorer)
+
+        # Mutation 
+        if np.random.binomial(1, 0.15) : # with a probability of 0.15
+            worker_offspring.mutation(initial_city=self.__nestCities[0])
+            explorer_offspring.mutation(self.__nestCities[0])
+        
+        if worst_worker is worst_explorer :
+            self.__ants.remove(worst_worker)
+            rdm_ant = random.choice(self.__ants) # remove random ant to keep the population size the same but not any of the following
+            while rdm_ant in [best_worker, best_explorer, second_best_explorer, second_best_worker]:
+                rdm_ant = random.choice(self.__ants)
+            self.__ants.remove(rdm_ant)
+        else :
+            self.__ants.remove(worst_worker)
+            self.__ants.remove(worst_explorer)
+
+        self.__ants.append(worker_offspring) # adding fittest offsprings to civilization
+        self.__ants.append(explorer_offspring)
 
     # CAUTION: not working !!!!!!!!!!!!!!!!
     def stepForwardParallel(self):
