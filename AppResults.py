@@ -223,11 +223,14 @@ class MainWindow(Tk):
         self.__buttonStart = Button(self, text='Simulation Step', command=self.simulationStep)
         self.__buttonStart.grid(row=11, column=1, padx=5, pady=5)
 
-        self.__buttonUndo = Button(self, text='Undo', command=self.undo)
-        self.__buttonUndo.grid(row=11, column=2, padx=5, pady=5)
+        # self.__buttonUndo = Button(self, text='Undo', command=self.undo)
+        # self.__buttonUndo.grid(row=11, column=2, padx=5, pady=5)
 
-        self.__buttonErase = Button(self, text='Erase', command=self.eraseScreen)
-        self.__buttonErase.grid(row=11, column=3, padx=5, pady=5)
+        # self.__buttonErase = Button(self, text='Erase', command=self.eraseScreen)
+        # self.__buttonErase.grid(row=11, column=3, padx=5, pady=5)
+
+        self.__buttonNewGeneration = Button(self, text='New Generation', command=self.__civ.newGeneration)
+        self.__buttonNewGeneration.grid(row=11, column=2, padx=5, pady=5)
 
         self.__buttonQuit = Button(self, text='Quit', command=self.destroy)
         self.__buttonQuit.grid(row=11, column=4, padx=5, pady=5)
@@ -240,13 +243,13 @@ class MainWindow(Tk):
         for custom_lbl in self.__labels:
             custom_lbl.updateCustomLabel()
 
-    def undo(self):
-        print("DEBUG: (work in progress) undo...")
-        pass
+    # def undo(self):
+    #     print("DEBUG: (work in progress) undo...")
+    #     pass
 
-    def eraseScreen(self):
-        print("DEBUG: (work in progress) erase screen...")
-        pass
+    # def eraseScreen(self):
+    #     print("DEBUG: (work in progress) erase screen...")
+    #     pass
 
     def simulationStep(self):
         print("DEBUG: simulation step (x10)...")
